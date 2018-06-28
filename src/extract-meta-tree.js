@@ -16,7 +16,7 @@ const extractConfig = configPath => {
   return {}
 }
 
-const processDirectory = (dirPath, state) => {
+const processDirectory = (dirPath, state, isRoot) => {
   const dirName = path.basename(dirPath)
   const config = extractConfig(path.join(dirPath, 'config.json'))
   const nextState = Object.assign({}, state, {
@@ -25,15 +25,19 @@ const processDirectory = (dirPath, state) => {
   if (config.template) {
     nextState.template = config.template
   }
+  const directory = {
+    config,
+    templateName: nextState.template,
+  }
+  if (!isRoot) {
+    directory.name = dirName
+    directory.path = dirPath
+    directory.relativePath = nextState.relativePath
+  } else {
+    directory.type = 'root'
+  }
   return {
-    directory: {
-      config,
-      name: dirName,
-      path: dirPath,
-      relativePath: nextState.relativePath,
-      templateName: nextState.template,
-      type: 'directory',
-    },
+    directory,
     nextState,
   }
 }
@@ -81,8 +85,11 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
     }, traverseAcc)
   }
   const initialState = { template: 'default', relativePath: '' }
-  const { directory, nextState } = processDirectory(inputDir, initialState)
-  directory.type = 'root'
+  const { directory, nextState } = processDirectory(
+    inputDir,
+    initialState,
+    true,
+  )
   return traverse(inputDir, nextState, directory)
 }
 
