@@ -1,7 +1,7 @@
 {
   "name": "templatiser",
   "version": "0.1.0",
-  "description": "Starter kit for npm libraries.",
+  "description": "Apply templates to a file tree.",
   "license": "MIT",
   "main": "dist/templatiser.js",
   "files": [

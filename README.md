@@ -1,7 +1,7 @@
 
 # templatiser 🖨
 
-Apply a template to a file tree.
+Apply templates to a file tree.
 
 [![npm](https://img.shields.io/npm/v/templatiser.svg?style=flat-square)](http://npm.im/templatiser)
 [![MIT License](https://img.shields.io/npm/l/templatiser.svg?style=flat-square)](http://opensource.org/licenses/MIT)
