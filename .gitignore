@@ -26,3 +26,6 @@ temp
 
 # IDEs
 .vscode
+
+# Test output
+tests/output

@@ -20,7 +20,7 @@ const processDirectory = (dirPath, state, isRoot) => {
   const dirName = path.basename(dirPath)
   const config = extractConfig(path.join(dirPath, 'config.json'))
   const nextState = Object.assign({}, state, {
-    relativePath: `${state.relativePath}/${dirName}`,
+    relativePath: isRoot ? '' : `${state.relativePath}/${dirName}`,
   })
   if (config.template) {
     nextState.template = config.template
@@ -33,6 +33,7 @@ const processDirectory = (dirPath, state, isRoot) => {
     directory.name = dirName
     directory.path = dirPath
     directory.relativePath = nextState.relativePath
+    directory.type = 'directory'
   } else {
     directory.type = 'root'
   }
