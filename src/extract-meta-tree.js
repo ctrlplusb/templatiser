@@ -82,6 +82,7 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
   }
   const initialState = { template: 'default', relativePath: '' }
   const { directory, nextState } = processDirectory(inputDir, initialState)
+  directory.type = 'root'
   return traverse(inputDir, nextState, directory)
 }
 
