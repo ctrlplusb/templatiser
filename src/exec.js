@@ -27,7 +27,15 @@ const resolveTemplate = (templatesDir, name = 'default') => {
   return templates[name]
 }
 
-module.exports = ({ templatesDir, outputDir, inputDir, allowedFiles }) => {
+const identity = x => x
+
+module.exports = ({
+  templatesDir,
+  outputDir,
+  inputDir,
+  allowedFiles,
+  preprocessSource = identity,
+}) => {
   const metaTree = extractMetaTree({ inputDir, allowedFiles })
 
   fs.ensureDirSync(outputDir)
@@ -55,7 +63,7 @@ module.exports = ({ templatesDir, outputDir, inputDir, allowedFiles }) => {
           targetPath,
           template.apply({
             pathToRoot: path.relative(targetPath, cwd).replace(/\.\.$/, ''),
-            source: source.replace(/`/g, '\\`'),
+            source: preprocessSource(source),
           }),
           {
             encoding: 'utf8',

@@ -5,6 +5,39 @@ const fs = require('fs-extra')
 const pathType = require('path-type')
 const path = require('path')
 
+const extractConfig = configPath => {
+  try {
+    return fs.existsSync(configPath)
+      ? JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8' }))
+      : {}
+  } catch (err) {
+    console.log(`Config file "${configPath}" is invalid`)
+  }
+  return {}
+}
+
+const processDirectory = (dirPath, state) => {
+  const dirName = path.basename(dirPath)
+  const config = extractConfig(path.join(dirPath, 'config.json'))
+  const nextState = Object.assign({}, state, {
+    relativePath: `${state.relativePath}/${dirName}`,
+  })
+  if (config.template) {
+    nextState.template = config.template
+  }
+  return {
+    directory: {
+      config,
+      name: dirName,
+      path: dirPath,
+      relativePath: nextState.relativePath,
+      templateName: nextState.template,
+      type: 'directory',
+    },
+    nextState,
+  }
+}
+
 const extractMetaTree = ({ allowedFiles, inputDir }) => {
   const traverse = (currentDirPath, state, traverseAcc) => {
     const results = fs.readdirSync(currentDirPath)
@@ -16,57 +49,40 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
         allowedFiles.findIndex(x => x.toLowerCase() === ext) !== -1
       ) {
         const name = path.basename(currentDirOrFilePath, ext)
-        const metaPath = path.join(currentDirPath, `${name}.meta.json`)
-
-        const extractMetaData = () => {
-          try {
-            return JSON.parse(fs.readFileSync(metaPath, { encoding: 'utf8' }))
-          } catch (err) {
-            console.log(`Meta file "${metaPath}" is invalid JSON`)
-          }
-          return {}
-        }
-
-        const metaData = fs.existsSync(metaPath) ? extractMetaData() : {}
+        const config = extractConfig(
+          path.join(currentDirPath, `${name}.config.json`),
+        )
         reduceAcc.files = reduceAcc.files || []
         reduceAcc.files.push({
           ext,
-          metaData,
+          config,
           name,
           path: currentDirOrFilePath,
           relativePath: state.relativePath,
-          templateName: metaData.template || state.template,
+          templateName: config.template || state.template,
           type: 'file',
         })
         return reduceAcc
-      } else if (pathType.dirSync(currentDirOrFilePath)) {
+      }
+
+      if (pathType.dirSync(currentDirOrFilePath)) {
         reduceAcc.directories = reduceAcc.directories || []
-        const metaPath = path.join(currentDirOrFilePath, '_meta.json')
-        const metaData = fs.existsSync(metaPath)
-          ? JSON.parse(fs.readFileSync(metaPath, { encoding: 'utf8' }))
-          : {}
-        const nextState = Object.assign({}, state, {
-          template: metaData.template,
-          relativePath: `${state.relativePath}/${dirOrFileName}`,
-        })
-        const directory = {
-          metaData,
-          name: dirOrFileName,
-          path: currentDirOrFilePath,
-          relativePath: nextState.relativePath,
-          templateName: nextState.template,
-          type: 'directory',
-        }
+        const { directory, nextState } = processDirectory(
+          currentDirOrFilePath,
+          state,
+        )
         reduceAcc.directories.push(
           traverse(currentDirOrFilePath, nextState, directory),
         )
         return reduceAcc
       }
+
       return reduceAcc
     }, traverseAcc)
   }
   const initialState = { template: 'default', relativePath: '' }
-  return traverse(inputDir, initialState, {})
+  const { directory, nextState } = processDirectory(inputDir, initialState)
+  return traverse(inputDir, nextState, directory)
 }
 
 module.exports = extractMetaTree
