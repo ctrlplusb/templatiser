@@ -1,16 +1,21 @@
-const walkPageData = (tree, fn, acc) => {
-  const walk = (current, currentDepth, currentSlugPath, walkAcc) => {
+const walk = (tree, fn, acc) => {
+  const recursive = (current, currentDepth, walkAcc) => {
     const depth = currentDepth + 1
-    const accWithSections = current.directories
-      ? current.directories.reduce((sectionAcc, directory) => {
-          return walk(directory, depth, fn(sectionAcc, directory))
-        }, walkAcc)
+    const directoriesAcc = current.directories
+      ? current.directories.reduce(
+          (directoryAcc, directory) =>
+            recursive(directory, depth, fn(directoryAcc, directory)),
+          walkAcc,
+        )
       : walkAcc
     return current.files
-      ? current.files.reduce((eacc, file) => fn(eacc, file), accWithSections)
-      : accWithSections
+      ? current.files.reduce(
+          (fileAcc, file) => fn(fileAcc, file),
+          directoriesAcc,
+        )
+      : directoriesAcc
   }
-  return walk(tree, -1, '', acc)
+  return recursive(tree, -1, '', acc)
 }
 
-module.exports = walkPageData
+module.exports = walk

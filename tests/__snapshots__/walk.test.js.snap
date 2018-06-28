@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`walk should respect accumulator 1`] = `
+Array [
+  "cities",
+  "cape-town",
+  "london",
+  "food",
+  "fruit",
+  "apple",
+  "banana",
+  "foo",
+]
+`;
