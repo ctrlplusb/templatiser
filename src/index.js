@@ -1,3 +1,3 @@
-const run = require('./run')
+const exec = require('./exec')
 
-module.exports = run
+module.exports = exec
