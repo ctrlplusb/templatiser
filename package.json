@@ -1,0 +1,116 @@
+{
+  "name": "templatiser",
+  "version": "0.1.0",
+  "description": "Starter kit for npm libraries.",
+  "license": "MIT",
+  "main": "dist/templatiser.js",
+  "files": [
+    "dist",
+    "walk.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ctrlplusb/templatiser.git"
+  },
+  "homepage": "https://github.com/ctrlplusb/templatiser#readme",
+  "author": "Sean Matheson <sean@ctrlplusb.com>",
+  "keywords": [
+    "library"
+  ],
+  "scripts": {
+    "build": "node ./tools/scripts/build.js",
+    "clean": "rimraf ./dist && rimraf ./coverage",
+    "lint": "eslint src",
+    "precommit": "lint-staged && npm run test",
+    "prepublish": "npm run build",
+    "test": "jest",
+    "test:coverage": "npm run test -- --coverage",
+    "test:coverage:deploy": "npm run test:coverage && codecov"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "fs-extra": "^6.0.1",
+    "lodash.template": "^4.4.0",
+    "path-type": "^3.0.0"
+  },
+  "devDependencies": {
+    "app-root-dir": "^1.0.2",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.5",
+    "babel-jest": "^23.2.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-3": "^6.24.1",
+    "change-case": "^3.0.2",
+    "codecov": "^3.0.2",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.0.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-import": "^2.13.0",
+    "flow-bin": "^0.75.0",
+    "gzip-size": "^4.0.0",
+    "husky": "^0.14.3",
+    "in-publish": "^2.0.0",
+    "jest": "^23.2.0",
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.6",
+    "prettier-eslint": "^8.8.2",
+    "pretty-bytes": "^5.1.0",
+    "ramda": "^0.25.0",
+    "readline-sync": "^1.4.7",
+    "rimraf": "^2.6.2"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/(commonjs|coverage|node_modules|tools|umd)/"
+    ]
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "root": true,
+    "env": {
+      "browser": true,
+      "es6": true,
+      "jest": true,
+      "node": true
+    },
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ],
+    "rules": {
+      "array-callback-return": 0,
+      "camelcase": 0,
+      "import/prefer-default-export": 0,
+      "import/no-extraneous-dependencies": 0,
+      "no-underscore-dangle": 0,
+      "no-nested-ternary": 0,
+      "react/no-array-index-key": 0,
+      "react/react-in-jsx-scope": 0,
+      "react/forbid-prop-types": 0,
+      "react/jsx-filename-extension": 0,
+      "react/sort-comp": 0
+    }
+  },
+  "eslintIgnoreConfig": [
+    "node_modules/",
+    "coverage/",
+    "dist/"
+  ],
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "parser": "flow"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write \"src/**/*.js\"",
+      "git add"
+    ]
+  }
+}
