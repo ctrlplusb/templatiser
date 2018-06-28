@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "description": "Apply templates to a file tree.",
   "license": "MIT",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "files": [
     "dist",
     "walk.js"
