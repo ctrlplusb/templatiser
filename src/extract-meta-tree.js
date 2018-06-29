@@ -21,12 +21,14 @@ const processDirectory = (dirPath, state, isRoot) => {
   const config = extractConfig(path.join(dirPath, 'config.json'))
   const nextState = Object.assign({}, state, {
     relativePath: isRoot ? '' : `${state.relativePath}/${dirName}`,
+    depth: state.depth + 1,
   })
   if (config.template) {
     nextState.template = config.template
   }
   const directory = {
     config,
+    depth: nextState.depth,
     templateName: nextState.template,
   }
   if (!isRoot) {
@@ -61,6 +63,7 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
         reduceAcc.files.push({
           ext,
           config,
+          depth: state.depth,
           name,
           path: currentDirOrFilePath,
           relativePath: state.relativePath,
@@ -85,7 +88,7 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
       return reduceAcc
     }, traverseAcc)
   }
-  const initialState = { template: 'default', relativePath: '' }
+  const initialState = { depth: -1, template: 'default', relativePath: '' }
   const { directory, nextState } = processDirectory(
     inputDir,
     initialState,

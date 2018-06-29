@@ -6,7 +6,7 @@ const createTemplate = require('lodash.template')
 const rimraf = require('rimraf')
 const path = require('path')
 const extractMetaTree = require('./extract-meta-tree')
-const walkMetaTree = require('./walk')
+const walk = require('./walk')
 
 const templates = {}
 
@@ -42,9 +42,9 @@ module.exports = ({
 
   const cwd = process.cwd()
 
-  walkMetaTree(
+  walk(
     metaTree,
-    (acc, { name, path: fileOrDirPath, relativePath, templateName, type }) => {
+    ({ name, path: fileOrDirPath, relativePath, templateName, type }) => {
       if (type === 'directory') {
         const targetPath = path.join(outputDir, relativePath)
         rimraf.sync(targetPath)

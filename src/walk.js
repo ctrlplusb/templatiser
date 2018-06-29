@@ -1,21 +1,23 @@
-const walk = (tree, fn, acc) => {
-  const recursive = (current, currentDepth, walkAcc) => {
-    const depth = currentDepth + 1
-    const directoriesAcc = current.directories
-      ? current.directories.reduce(
-          (directoryAcc, directory) =>
-            recursive(directory, depth, fn(directoryAcc, directory)),
-          walkAcc,
-        )
-      : walkAcc
-    return current.files
-      ? current.files.reduce(
-          (fileAcc, file) => fn(fileAcc, file),
-          directoriesAcc,
-        )
-      : directoriesAcc
+const walk = (tree, visitor) => {
+  const recursive = current => {
+    if (current.directories) {
+      current.directories.forEach(directory => {
+        const visitResult = visitor(directory)
+        if (visitResult === false) {
+          // do nothing
+        } else {
+          recursive(directory)
+        }
+      })
+    }
+
+    if (current.files) {
+      current.files.forEach(file => {
+        visitor(file)
+      })
+    }
   }
-  return recursive(tree, -1, '', acc)
+  return recursive(tree)
 }
 
 module.exports = walk
