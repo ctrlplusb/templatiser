@@ -2,15 +2,33 @@
 
 exports[`exec should produce the expected meta data 1`] = `
 Object {
-  "config": Object {},
+  "config": Object {
+    "cities": Object {
+      "cape-town.txt": Object {
+        "title": "Cape Town",
+      },
+      "title": "Cities",
+    },
+    "foo.txt": Object {
+      "title": "Foo",
+    },
+    "title": "Example",
+  },
   "depth": 0,
   "directories": Array [
     Object {
-      "config": Object {},
+      "config": Object {
+        "cape-town.txt": Object {
+          "title": "Cape Town",
+        },
+        "title": "Cities",
+      },
       "depth": 1,
       "files": Array [
         Object {
-          "config": Object {},
+          "config": Object {
+            "title": "Cape Town",
+          },
           "depth": 1,
           "ext": ".txt",
           "name": "cape-town",
@@ -81,7 +99,9 @@ Object {
   ],
   "files": Array [
     Object {
-      "config": Object {},
+      "config": Object {
+        "title": "Foo",
+      },
       "depth": 0,
       "ext": ".txt",
       "name": "foo",

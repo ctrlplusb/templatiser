@@ -1,0 +1,12 @@
+{
+  "title": "Example",
+  "cities": {
+    "title": "Cities",
+    "cape-town.txt": {
+      "title": "Cape Town"
+    }
+  },
+  "foo.txt": {
+    "title": "Foo"
+  }
+}

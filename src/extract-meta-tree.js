@@ -16,32 +16,37 @@ const extractConfig = configPath => {
   return {}
 }
 
-const processDirectory = (dirPath, state, isRoot) => {
+const processDirectory = (dirPath, parentState, isRoot) => {
   const dirName = path.basename(dirPath)
-  const config = extractConfig(path.join(dirPath, 'config.json'))
-  const nextState = Object.assign({}, state, {
-    relativePath: isRoot ? '' : `${state.relativePath}/${dirName}`,
-    depth: state.depth + 1,
+  const config = Object.assign(
+    {},
+    parentState.config[dirName] || {},
+    extractConfig(path.join(dirPath, 'config.json')),
+  )
+  const state = Object.assign({}, parentState, {
+    config,
+    relativePath: isRoot ? '' : `${parentState.relativePath}/${dirName}`,
+    depth: parentState.depth + 1,
   })
   if (config.template) {
-    nextState.template = config.template
+    state.template = config.template
   }
   const directory = {
     config,
-    depth: nextState.depth,
-    templateName: nextState.template,
+    depth: state.depth,
+    templateName: state.template,
   }
   if (!isRoot) {
     directory.name = dirName
     directory.path = dirPath
-    directory.relativePath = nextState.relativePath
+    directory.relativePath = state.relativePath
     directory.type = 'directory'
   } else {
     directory.type = 'root'
   }
   return {
     directory,
-    nextState,
+    state,
   }
 }
 
@@ -56,8 +61,10 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
         allowedFiles.findIndex(x => x.toLowerCase() === ext) !== -1
       ) {
         const name = path.basename(currentDirOrFilePath, ext)
-        const config = extractConfig(
-          path.join(currentDirPath, `${name}.config.json`),
+        const config = Object.assign(
+          {},
+          state.config[dirOrFileName],
+          extractConfig(path.join(currentDirPath, `${name}.config.json`)),
         )
         reduceAcc.files = reduceAcc.files || []
         reduceAcc.files.push({
@@ -75,12 +82,12 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
 
       if (pathType.dirSync(currentDirOrFilePath)) {
         reduceAcc.directories = reduceAcc.directories || []
-        const { directory, nextState } = processDirectory(
+        const { directory, state: dirState } = processDirectory(
           currentDirOrFilePath,
           state,
         )
         reduceAcc.directories.push(
-          traverse(currentDirOrFilePath, nextState, directory),
+          traverse(currentDirOrFilePath, dirState, directory),
         )
         return reduceAcc
       }
@@ -88,13 +95,14 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
       return reduceAcc
     }, traverseAcc)
   }
-  const initialState = { depth: -1, template: 'default', relativePath: '' }
-  const { directory, nextState } = processDirectory(
-    inputDir,
-    initialState,
-    true,
-  )
-  return traverse(inputDir, nextState, directory)
+  const initialState = {
+    config: {},
+    depth: -1,
+    template: 'default',
+    relativePath: '',
+  }
+  const { directory, state } = processDirectory(inputDir, initialState, true)
+  return traverse(inputDir, state, directory)
 }
 
 module.exports = extractMetaTree
