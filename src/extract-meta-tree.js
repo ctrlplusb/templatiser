@@ -20,7 +20,9 @@ const processDirectory = (dirPath, parentState, isRoot) => {
   const dirName = path.basename(dirPath)
   const config = Object.assign(
     {},
-    parentState.config[dirName] || {},
+    parentState.config.directories && parentState.config.directories[dirName]
+      ? parentState.config.directories[dirName]
+      : {},
     extractConfig(path.join(dirPath, 'config.json')),
   )
   const state = Object.assign({}, parentState, {
@@ -63,7 +65,9 @@ const extractMetaTree = ({ allowedFiles, inputDir }) => {
         const name = path.basename(currentDirOrFilePath, ext)
         const config = Object.assign(
           {},
-          state.config[dirOrFileName],
+          state.config.files && state.config.files[dirOrFileName]
+            ? state.config.files[dirOrFileName]
+            : {},
           extractConfig(path.join(currentDirPath, `${name}.config.json`)),
         )
         reduceAcc.files = reduceAcc.files || []

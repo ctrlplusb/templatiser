@@ -3,14 +3,23 @@
 exports[`exec should produce the expected meta data 1`] = `
 Object {
   "config": Object {
-    "cities": Object {
-      "cape-town.txt": Object {
-        "title": "Cape Town",
+    "directories": Object {
+      "cities": Object {
+        "files": Object {
+          "cape-town.txt": Object {
+            "title": "Cape Town",
+          },
+        },
+        "title": "Cities",
       },
-      "title": "Cities",
+      "food": Object {
+        "title": "Food (Override Me)",
+      },
     },
-    "foo.txt": Object {
-      "title": "Foo",
+    "files": Object {
+      "foo.txt": Object {
+        "title": "Foo",
+      },
     },
     "title": "Example",
   },
@@ -18,8 +27,10 @@ Object {
   "directories": Array [
     Object {
       "config": Object {
-        "cape-town.txt": Object {
-          "title": "Cape Town",
+        "files": Object {
+          "cape-town.txt": Object {
+            "title": "Cape Town",
+          },
         },
         "title": "Cities",
       },
@@ -55,7 +66,9 @@ Object {
       "type": "directory",
     },
     Object {
-      "config": Object {},
+      "config": Object {
+        "title": "Food",
+      },
       "depth": 1,
       "directories": Array [
         Object {

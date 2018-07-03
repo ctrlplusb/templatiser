@@ -1,12 +1,21 @@
 {
   "title": "Example",
-  "cities": {
-    "title": "Cities",
-    "cape-town.txt": {
-      "title": "Cape Town"
+  "directories": {
+    "cities": {
+      "title": "Cities",
+      "files": {
+        "cape-town.txt": {
+          "title": "Cape Town"
+        }
+      }
+    },
+    "food": {
+      "title": "Food (Override Me)"
     }
   },
-  "foo.txt": {
-    "title": "Foo"
+  "files": {
+    "foo.txt": {
+      "title": "Foo"
+    }
   }
 }
